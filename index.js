@@ -102,6 +102,7 @@ async function run() {
       const result = await usersCollection.insertOne(user);
       res.send(result);
     });
+    
     // class collection apis
     app.post("/classes", async (req, res) => {
       const newItem = req.body;
