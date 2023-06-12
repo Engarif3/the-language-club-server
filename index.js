@@ -233,10 +233,15 @@ async function run() {
       res.send({ insertResult });
     });
 
+    // app.get("/payments", async (req, res) => {
+    //   const result = await paymentCollection.find().toArray();
+    //   res.send(result);
+    // });
     app.get("/payments", async (req, res) => {
-      const result = await paymentCollection.find().toArray();
+      const result = await paymentCollection.find().sort({ date: -1 }).toArray();
       res.send(result);
     });
+    
 
 
     // Send a ping to confirm a successful connection
