@@ -90,7 +90,7 @@ async function run() {
       const result = await usersCollection.find().toArray();
       res.send(result);
     });
-
+    // users collection apis
     app.post("/users", async (req, res) => {
       const user = req.body;
       const query = { email: user.email };
