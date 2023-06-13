@@ -237,7 +237,7 @@ async function run() {
     });
     
     // +++++++++++
-    // Aggregate pipeline casses and users
+    // Aggregate pipeline classes and users
     app.get('/combinedData', async (req, res) => {
       try {
         const pipeline = [
@@ -293,7 +293,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("Assignment 12 is running");
+  res.send("The language club server is running");
 });
 
 app.listen(port, () => {
