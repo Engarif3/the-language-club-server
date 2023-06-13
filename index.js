@@ -228,16 +228,9 @@ async function run() {
       const payment = req.body;
       const insertResult = await paymentCollection.insertOne(payment);
 
-      // const query = { _id: { $in: payment.cartItems.map(id => new ObjectId(id)) } }
-      // const deleteResult = await cartCollection.deleteMany(query)
-
       res.send({ insertResult });
     });
 
-    // app.get("/payments", async (req, res) => {
-    //   const result = await paymentCollection.find().toArray();
-    //   res.send(result);
-    // });
     app.get("/payments", async (req, res) => {
       const result = await paymentCollection.find().sort({ date: -1 }).toArray();
       res.send(result);
