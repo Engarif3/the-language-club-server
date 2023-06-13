@@ -47,7 +47,8 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
-
+    
+ // schoolDb and its collections
     const usersCollection = client.db("schoolDb").collection("users");
     const classCollection = client.db("schoolDb").collection("classes");
     const bookingsCollection = client.db("schoolDb").collection("bookings");
