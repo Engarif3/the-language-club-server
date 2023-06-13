@@ -243,6 +243,46 @@ async function run() {
       res.send(result);
     });
     
+    // +++++++++++
+    app.get('/combinedData', async (req, res) => {
+      try {
+        const pipeline = [
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'instructorName',
+              foreignField: 'name',
+              as: 'instructorData'
+            }
+          },
+          {
+            $unwind: '$instructorData'
+          },
+          {
+            $project: {
+              _id: 0,
+              className: '$nameClass',
+              classImage: '$classImage',
+              instructorName: '$instructorName',
+              instructorEmail: '$instructorData.email',
+              instructorPhoto: '$instructorData.photo',
+              seats: '$seats',
+              price: '$price',
+              feedback: '$feedback',
+              status: '$status'
+            }
+          }
+        ];
+    
+        const combinedData = await classCollection.aggregate(pipeline).toArray();
+        res.json(combinedData);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+    
+    // +++++++++++++
 
 
     // Send a ping to confirm a successful connection
