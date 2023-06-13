@@ -253,7 +253,7 @@ async function run() {
           },
           {
             $project: {
-              _id: 0,
+              _id: '$_id',
               className: '$nameClass',
               classImage: '$classImage',
               instructorName: '$instructorName',
@@ -269,6 +269,7 @@ async function run() {
     
         const combinedData = await classCollection.aggregate(pipeline).toArray();
         res.json(combinedData);
+        
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
