@@ -47,7 +47,7 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
-    
+
  // schoolDb and its collections
     const usersCollection = client.db("schoolDb").collection("users");
     const classCollection = client.db("schoolDb").collection("classes");
@@ -70,7 +70,7 @@ async function run() {
       if (user?.role !== "admin") {
         return res
           .status(403)
-          .send({ error: true, message: "forbidden message" });
+          .send({ error: true, message: "Forbidden message" });
       }
       next();
     };
@@ -81,7 +81,7 @@ async function run() {
       if (user?.role !== "instructor") {
         return res
           .status(403)
-          .send({ error: true, message: "forbidden message" });
+          .send({ error: true, message: "Forbidden message" });
       }
       next();
     };
