@@ -49,7 +49,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
- // schoolDb and its collections
+    // schoolDb and its collections
     const usersCollection = client.db("schoolDb").collection("users");
     const classCollection = client.db("schoolDb").collection("classes");
     const bookingsCollection = client.db("schoolDb").collection("bookings");
@@ -104,7 +104,7 @@ async function run() {
       const result = await usersCollection.insertOne(user);
       res.send(result);
     });
-    
+
     // class collection apis
     app.post("/classes", async (req, res) => {
       const newItem = req.body;
@@ -113,73 +113,64 @@ async function run() {
     });
 
     // +++
-  // ...
+    // ...
 
-// class collection APIs
-app.get("/classes/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const query = { _id: new ObjectId(id) };
-    const result = await classCollection.findOne(query);
+    // class collection APIs
+    app.get("/classes/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await classCollection.findOne(query);
 
-    if (result) {
-      res.json(result);
-    } else {
-      res.status(404).json({ error: "Class not found" });
-    }
-  } catch (error) {
-    console.error("Error retrieving class:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while retrieving the class" });
-  }
-});
+        if (result) {
+          res.json(result);
+        } else {
+          res.status(404).json({ error: "Class not found" });
+        }
+      } catch (error) {
+        console.error("Error retrieving class:", error);
+        res
+          .status(500)
+          .json({ error: "An error occurred while retrieving the class" });
+      }
+    });
 
-app.get("/classes", async (req, res) => {
-  const result = await classCollection.find().toArray();
-  res.send(result);
-});
-
-// ...
-
-// ++++
-    // app.get("/classes", async (req, res) => {
-    //   const result = await classCollection.find().toArray();
-    //   res.send(result);
-    // });
+    app.get("/classes", async (req, res) => {
+      const result = await classCollection.find().toArray();
+      res.send(result);
+    });
 
     // +++++++++++++++++
 
-app.put('/classes/:id', async (req, res) => {
-  const id = req.params.id;
-  const filter = { _id: new ObjectId(id) };
-  const body = req.body;
-  const updateClass = {
-    $set: {
-      nameClass: body.name,
-      classImage:body.classImage,
-      instructorName: body.instructorName,
-      email: body.email,
-      price: body.price,
-      seats: body.seats,
-    },
-  };
+    app.put("/classes/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const body = req.body;
+      const updateClass = {
+        $set: {
+          nameClass: body.name,
+          classImage: body.classImage,
+          instructorName: body.instructorName,
+          email: body.email,
+          price: body.price,
+          seats: body.seats,
+        },
+      };
 
-  try {
-    const result = await classCollection.updateOne(filter, updateClass);
-    if (result.matchedCount === 0) {
-      return res.status(404).json({ error: 'Class not found' });
-    }
+      try {
+        const result = await classCollection.updateOne(filter, updateClass);
+        if (result.matchedCount === 0) {
+          return res.status(404).json({ error: "Class not found" });
+        }
 
-    res.json({ message: 'Class updated successfully' });
-  } catch (error) {
-    console.error('Error updating class:', error);
-    res.status(500).json({ error: 'An error occurred while updating the class' });
-  }
-});
-
-
-
+        res.json({ message: "Class updated successfully" });
+      } catch (error) {
+        console.error("Error updating class:", error);
+        res
+          .status(500)
+          .json({ error: "An error occurred while updating the class" });
+      }
+    });
 
     // ++++++++++++++++++++
 
@@ -274,8 +265,6 @@ app.put('/classes/:id', async (req, res) => {
       res.send(result);
     });
 
-  
-
     app.post("/create-payment-intent", verifyJWT, async (req, res) => {
       const { price } = req.body;
       if (price) {
@@ -300,53 +289,56 @@ app.put('/classes/:id', async (req, res) => {
     });
 
     app.get("/payments", async (req, res) => {
-      const result = await paymentCollection.find().sort({ date: -1 }).toArray();
+      const result = await paymentCollection
+        .find()
+        .sort({ date: -1 })
+        .toArray();
       res.send(result);
     });
-    
+
     // +++++++++++
     // Aggregate pipeline classes and users
-    app.get('/combinedData', async (req, res) => {
+    app.get("/combinedData", async (req, res) => {
       try {
         const pipeline = [
           {
             $lookup: {
-              from: 'users',
-              localField: 'instructorName',
-              foreignField: 'name',
-              as: 'instructorData'
-            }
+              from: "users",
+              localField: "instructorName",
+              foreignField: "name",
+              as: "instructorData",
+            },
           },
           {
-            $unwind: '$instructorData'
+            $unwind: "$instructorData",
           },
           {
             $project: {
-              _id: '$_id',
-              className: '$nameClass',
-              classImage: '$classImage',
-              instructorName: '$instructorName',
-              instructorEmail: '$instructorData.email',
-              instructorPhoto: '$instructorData.photo',
-              seats: '$seats',
-              price: '$price',
-              feedback: '$feedback',
-              status: '$status'
-            }
-          }
+              _id: "$_id",
+              className: "$nameClass",
+              classImage: "$classImage",
+              instructorName: "$instructorName",
+              instructorEmail: "$instructorData.email",
+              instructorPhoto: "$instructorData.photo",
+              seats: "$seats",
+              price: "$price",
+              feedback: "$feedback",
+              status: "$status",
+            },
+          },
         ];
-    
-        const combinedData = await classCollection.aggregate(pipeline).toArray();
+
+        const combinedData = await classCollection
+          .aggregate(pipeline)
+          .toArray();
         res.json(combinedData);
-        
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: "Internal server error" });
       }
     });
-    
-    // +++++++++++++
 
+    // +++++++++++++
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
