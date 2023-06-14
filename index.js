@@ -157,6 +157,7 @@ app.put('/classes/:id', async (req, res) => {
   const updateClass = {
     $set: {
       nameClass: body.name,
+      classImage:body.classImage,
       instructorName: body.instructorName,
       email: body.email,
       price: body.price,
