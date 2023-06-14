@@ -87,7 +87,7 @@ async function run() {
       next();
     };
 
-    app.get("/users", async (req, res) => {
+    app.get("/users",verifyJWT, verifyAdmin,verifyInstructor, async (req, res) => {
       const result = await usersCollection.find().toArray();
       res.send(result);
     });
