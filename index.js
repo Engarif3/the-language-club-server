@@ -31,7 +31,8 @@ const verifyJWT = (req, res, next) => {
   });
 };
 
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require("mongodb");
+const { ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.w8ykptm.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -111,10 +112,75 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/classes", async (req, res) => {
-      const result = await classCollection.find().toArray();
-      res.send(result);
-    });
+    // +++
+  // ...
+
+// class collection APIs
+app.get("/classes/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const result = await classCollection.findOne(query);
+
+    if (result) {
+      res.json(result);
+    } else {
+      res.status(404).json({ error: "Class not found" });
+    }
+  } catch (error) {
+    console.error("Error retrieving class:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving the class" });
+  }
+});
+
+app.get("/classes", async (req, res) => {
+  const result = await classCollection.find().toArray();
+  res.send(result);
+});
+
+// ...
+
+// ++++
+    // app.get("/classes", async (req, res) => {
+    //   const result = await classCollection.find().toArray();
+    //   res.send(result);
+    // });
+
+    // +++++++++++++++++
+
+app.put('/classes/:id', async (req, res) => {
+  const id = req.params.id;
+  const filter = { _id: new ObjectId(id) };
+  const body = req.body;
+  const updateClass = {
+    $set: {
+      nameClass: body.name,
+      instructorName: body.instructorName,
+      email: body.email,
+      price: body.price,
+      seats: body.seats,
+    },
+  };
+
+  try {
+    const result = await classCollection.updateOne(filter, updateClass);
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: 'Class not found' });
+    }
+
+    res.json({ message: 'Class updated successfully' });
+  } catch (error) {
+    console.error('Error updating class:', error);
+    res.status(500).json({ error: 'An error occurred while updating the class' });
+  }
+});
+
+
+
+
+    // ++++++++++++++++++++
 
     app.patch("/classes/:id", async (req, res) => {
       try {
