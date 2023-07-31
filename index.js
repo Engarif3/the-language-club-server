@@ -87,10 +87,18 @@ async function run() {
       next();
     };
 
-    app.get("/users",verifyJWT, verifyAdmin,verifyInstructor, async (req, res) => {
+    app.get("/users", async (req, res) => {
       const result = await usersCollection.find().toArray();
       res.send(result);
     });
+
+    // get single user
+    app.get("/user/:id", async (req, res) =>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await usersCollection.findOne(query)
+      res.send(result)
+    })
     // users collection apis
     app.post("/users", async (req, res) => {
       const user = req.body;
