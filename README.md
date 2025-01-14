@@ -35,7 +35,7 @@ npm install
 
 **3. Start the frontend development server:**
 ```bash
-npm run dev
+npm start
 ```
 
 **4. Access the frontend locally:**
